@@ -39,7 +39,7 @@ const BookCard = ({ book }: IProps) => {
       {/* Book Image */}
       <div className="flex justify-center items-center h-48 bg-white rounded-xl shadow-md overflow-hidden">
         <img
-          src={bookPlaceholder}
+          src="https://tse1.mm.bing.net/th/id/OIP.1itGKGL1dL0YLSoGKJkoDwHaH-?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
           alt={book.title}
           className="max-h-full object-contain"
         />
