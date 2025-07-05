@@ -2,7 +2,7 @@ import BookCard from "@/components/BookCard";
 import SkeletonUI from "@/components/SkeletonUI";
 import { Button } from "@/components/ui/button";
 import { useGetBooksQuery } from "@/redux/api/baseApi";
-import type { IBook } from "@/types";
+import type { IBookFormInput } from "@/types";
 import { Link } from "react-router";
 
 const AllBooks = () => {
@@ -41,7 +41,7 @@ const AllBooks = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
           {!isLoading &&
             data.data.length > 0 &&
-            data.data.map((book: IBook) => (
+            data.data.map((book: IBookFormInput) => (
               <BookCard key={book._id} book={book} />
             ))}
         </div>
@@ -51,12 +51,3 @@ const AllBooks = () => {
 };
 
 export default AllBooks;
-
-{
-  /* <button type="button" class="bg-indigo-500 ..." disabled>
-  <svg class="mr-3 size-5 animate-spin ..." viewBox="0 0 24 24">
-    <!-- ... -->
-  </svg>
-  Processing…
-</button> */
-}
