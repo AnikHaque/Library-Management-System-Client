@@ -10,23 +10,24 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Input } from "./ui/input";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import type { IBook } from "@/types";
+
 import { useState } from "react";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { useEditBookMutation } from "@/redux/api/baseApi";
 import { Textarea } from "./ui/textarea";
 import Swal from "sweetalert2";
 import { toastify } from "@/utils/alerts";
+import type { IBookFormInput } from "@/types";
 
 interface IProps {
-  book: IBook;
+  book: IBookFormInput & { _id: string }; // _id is used in submit
 }
 
 export function EditBookModal({ book }: IProps) {
   const [open, setOpen] = useState(false);
   const [editBook] = useEditBookMutation();
 
-  const form = useForm<IBook>({
+  const form = useForm<IBookFormInput>({
     defaultValues: {
       title: book.title,
       author: book.author,
@@ -34,25 +35,40 @@ export function EditBookModal({ book }: IProps) {
       isbn: book.isbn,
       copies: book.copies,
       description: book.description,
+      available: book.available, // optional, keep in defaultValues if exists
     },
   });
+
   const id = book._id;
 
-  const handleSubmit: SubmitHandler<IBook> = async (data) => {
+  const handleSubmit: SubmitHandler<IBookFormInput> = async (data) => {
+    // parse copies once, fallback to 0 if invalid number
+    const copiesNumber = Number(data.copies);
+    const validCopies = isNaN(copiesNumber) ? 0 : copiesNumber;
+
     const bookData = {
       ...data,
-      copies: parseInt(data.copies),
-      available: parseInt(data.copies) > 0,
+      copies: validCopies,
+      available: validCopies > 0,
     };
 
-    const response = await editBook({ id, bookData });
-    if (response?.data?.success) {
-      toastify("success", "Save Changes Successful!");
-    } else {
+    try {
+      const response = await editBook({ id, bookData });
+      if (response?.data?.success) {
+        toastify("success", "Save Changes Successful!");
+      } else {
+        Swal.fire({
+          title: "Something went wrong!",
+          text: "Please try again later.",
+          icon: "error",
+          draggable: true,
+        });
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       Swal.fire({
-        title: "Something went wrong!",
-        // title: response.error.data.error.name,
-        text: "Please try again later.",
+        title: "Error!",
+        text: "Failed to save changes.",
         icon: "error",
         draggable: true,
       });
@@ -65,7 +81,10 @@ export function EditBookModal({ book }: IProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="hover:bg-[#6255E3] hover:text-white" variant={"outline"}>
+        <Button
+          className="hover:bg-[#6255E3] hover:text-white"
+          variant={"outline"}
+        >
           Edit
         </Button>
       </DialogTrigger>
@@ -77,8 +96,9 @@ export function EditBookModal({ book }: IProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="border"></div>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 ">
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <Form {...form}>
+            {/* Title */}
             <FormField
               control={form.control}
               name="title"
@@ -98,6 +118,7 @@ export function EditBookModal({ book }: IProps) {
               )}
             />
 
+            {/* Author */}
             <FormField
               control={form.control}
               name="author"
@@ -117,6 +138,7 @@ export function EditBookModal({ book }: IProps) {
               )}
             />
 
+            {/* Genre */}
             <FormField
               control={form.control}
               name="genre"
@@ -125,6 +147,7 @@ export function EditBookModal({ book }: IProps) {
                 <FormItem>
                   <FormLabel>Genre</FormLabel>
                   <FormControl>
+                    {/* You could change this Input to a select dropdown for better UX */}
                     <Input {...field} />
                   </FormControl>
                   {fieldState.error && (
@@ -136,6 +159,7 @@ export function EditBookModal({ book }: IProps) {
               )}
             />
 
+            {/* ISBN */}
             <FormField
               control={form.control}
               name="isbn"
@@ -155,6 +179,7 @@ export function EditBookModal({ book }: IProps) {
               )}
             />
 
+            {/* Description */}
             <FormField
               control={form.control}
               name="description"
@@ -174,6 +199,7 @@ export function EditBookModal({ book }: IProps) {
               )}
             />
 
+            {/* Copies */}
             <FormField
               control={form.control}
               name="copies"
@@ -188,7 +214,16 @@ export function EditBookModal({ book }: IProps) {
                 <FormItem>
                   <FormLabel>Copies</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input
+                      type="number"
+                      {...field}
+                      // ensure value is a number or empty string for input control
+                      value={
+                        field.value === undefined || field.value === null
+                          ? ""
+                          : field.value
+                      }
+                    />
                   </FormControl>
                   {fieldState.error && (
                     <p className="text-red-500 text-sm mt-1">
