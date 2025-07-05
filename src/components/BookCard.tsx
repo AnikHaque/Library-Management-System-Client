@@ -78,24 +78,10 @@ const BookCard = ({ book }: IProps) => {
         {/* Action Buttons */}
         <div className="mt-6 flex justify-between gap-3">
           {/* Borrow Button */}
-          <BorrowModal book={book}>
-            <Button
-              className="flex-1 bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-500 hover:to-green-700 transition"
-              aria-label={`Borrow ${book.title}`}
-            >
-              Borrow
-            </Button>
-          </BorrowModal>
+          <BorrowModal book={book}></BorrowModal>
 
           {/* Edit Button */}
-          <EditBookModal book={book}>
-            <Button
-              className="flex-1 bg-gradient-to-r from-blue-400 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-500 hover:to-blue-700 transition"
-              aria-label={`Edit ${book.title}`}
-            >
-              Update
-            </Button>
-          </EditBookModal>
+          <EditBookModal book={book}></EditBookModal>
 
           {/* Delete Button */}
           <Button
