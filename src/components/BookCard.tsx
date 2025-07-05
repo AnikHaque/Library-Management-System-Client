@@ -1,14 +1,13 @@
-import type { IBook } from "@/types";
-import bookPlaceholder from "../assets/book-placeholder.png";
 import { Button } from "./ui/button";
 import { BorrowModal } from "./BorrowModal";
 import { EditBookModal } from "./EditModal";
 import { useDeleteBookMutation } from "@/redux/api/baseApi";
 import Swal from "sweetalert2";
 import { toastify } from "@/utils/alerts";
+import type { IBookFormInput } from "@/types";
 
 interface IProps {
-  book: IBook;
+  book: IBookFormInput;
 }
 const BookCard = ({ book }: IProps) => {
   const [deleteBook] = useDeleteBookMutation();

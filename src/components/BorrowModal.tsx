@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { IBook } from "@/types";
+
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Input } from "./ui/input";
@@ -22,8 +22,9 @@ import { useState } from "react";
 import { toastify } from "@/utils/alerts";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
+import type { IBookFormInput } from "@/types";
 interface IProps {
-  book: IBook;
+  book: IBookFormInput;
 }
 export function BorrowModal({ book }: IProps) {
   const [open, setOpen] = useState(false);
@@ -45,7 +46,6 @@ export function BorrowModal({ book }: IProps) {
     } else {
       Swal.fire({
         title: "Something went wrong!",
-        // title: response.error.data.error.name,
         text: "Please try again later.",
         icon: "error",
         draggable: true,
@@ -59,7 +59,13 @@ export function BorrowModal({ book }: IProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"outline"} disabled={!book.available} className="hover:bg-[#6255E3] hover:text-white">Borrow</Button>
+        <Button
+          variant={"outline"}
+          disabled={!book.available}
+          className="hover:bg-[#6255E3] hover:text-white"
+        >
+          Borrow
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

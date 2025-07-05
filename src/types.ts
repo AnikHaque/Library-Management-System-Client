@@ -1,4 +1,6 @@
 export type IBookFormInput = {
+  _id: unknown;
+  available: boolean;
   title: string;
   author: string;
   genre:
