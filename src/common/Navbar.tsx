@@ -1,5 +1,4 @@
 import { ModeToggle } from "@/components/mode-toggle";
-import logo from "../assets/logo.png";
 import { Link, NavLink } from "react-router";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
